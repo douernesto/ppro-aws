@@ -1,0 +1,46 @@
+name: Plan dev-centralus
+on:
+  pull_request:
+    paths:
+      - "environments/dev-centralus/**"
+      - ".github/workflows/terraform_plan_dev_us_east_1.yml"
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Set this to 'true' to run a manual plan."
+        required: true
+        type: boolean
+
+env:
+  tf_version: 1.5.5
+  TF_INPUT: false
+  AWS_ACCESS_KEY_ID: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+  AWS_SECRET_ACCESS_KEY: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+  AWS_REGION: "us-east-1"
+
+defaults:
+  run:
+    working-directory: "environments/dev-us-east-1"
+
+jobs:
+  terraform:
+    name: Terraform
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.tf_version }}
+          terraform_wrapper: false
+     
+      - name: Terraform Init
+        id: init
+        run: terraform init 
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -input=false
