@@ -2,7 +2,7 @@ name: Plan dev-centralus
 on:
   pull_request:
     paths:
-      - "environments/dev-centralus/**"
+      - "environments/dev-us-east-1/**"
       - ".github/workflows/terraform_plan_dev_us_east_1.yml"
   workflow_dispatch:
     inputs:
