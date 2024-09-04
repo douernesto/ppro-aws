@@ -1,4 +1,4 @@
-name: Plan dev-centralus
+name: Plan dev-us-east-1
 on:
   pull_request:
     paths:
