@@ -1,6 +1,6 @@
 # Deploy an EKS Cluster using Terraform
 
-This code uses Terraform AWS provider and a single module to reuse the code in multiple enviroments, in this case I created 2 directories for environment "dev-us-east-1" and "prod-us-east".
+This code uses Terraform AWS provider and a single module `modules/eks` to reuse the code in multiple enviroments, in this case I created 2 directories for environment "dev-us-east-1" and "prod-us-east".
 I have only instiated the code on the  "dev-us-east-1" environments for the purpose of the demo.
 
 ## Requirements
@@ -8,6 +8,9 @@ I have only instiated the code on the  "dev-us-east-1" environments for the purp
 - Terraform AWS Provider ~> 5.65.0
 
 ## How it works
+The code has already defined a default attributes to instantiate the code you can change the values as required, for example: **tags, cluster name, subnet count, CIDR block, capacity type, instance type, node pool size, labels and taints.**
+The module `modules/eks` does the following work:
+
 1. Create VPC
 1. Create Internet Gateway
 1. Create a Subnet
@@ -44,8 +47,7 @@ I have only instiated the code on the  "dev-us-east-1" environments for the purp
 
 Notes:
 - The pipeline doesnt a have backend on purpose to avoid costs, altought its connected to my personal account so the plan can succesfully run.
-- For this reason any apply wont work
-
+- For this reason any apply wont work.
 
 
 ## Execution Locally
