@@ -1,3 +1,4 @@
+# Required role scoped to EKS Nodes
 resource "aws_iam_role" "eks_role_nodes" {
   name = "${var.eks_name}-eks-role-nodes"
 
@@ -31,6 +32,7 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
   role       = aws_iam_role.eks_role_nodes.name
 }
 
+# Node Pool for EKS Cluster
 resource "aws_eks_node_group" "node_pool" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = "${var.eks_name}-nodepool"

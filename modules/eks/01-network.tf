@@ -1,3 +1,4 @@
+# Create VPC
 resource "aws_vpc" "eks_vpc" {
   cidr_block = var.vpc_cidr_block
   tags = {
@@ -5,6 +6,7 @@ resource "aws_vpc" "eks_vpc" {
   }
 }
 
+# Internet Gateway for VPC
 resource "aws_internet_gateway" "eks_igw" {
   vpc_id = aws_vpc.eks_vpc.id
   tags = {
@@ -12,6 +14,7 @@ resource "aws_internet_gateway" "eks_igw" {
   }
 }
 
+# Private Subnets
 resource "aws_subnet" "eks_subnet_private" {
   count                   = var.private_subnet_count
   vpc_id                  = aws_vpc.eks_vpc.id
@@ -24,7 +27,7 @@ resource "aws_subnet" "eks_subnet_private" {
   }
 }
 
-
+# Elastic IPs for each private subnet
 resource "aws_eip" "nat_eip" {
   count  = length(aws_subnet.eks_subnet_private)
   domain = "vpc"
@@ -33,6 +36,7 @@ resource "aws_eip" "nat_eip" {
   }
 }
 
+# NAT Gateways for each private subnet
 resource "aws_nat_gateway" "nat_gateway" {
   count         = length(aws_subnet.eks_subnet_private)
   allocation_id = aws_eip.nat_eip[count.index].id
@@ -46,6 +50,7 @@ resource "aws_nat_gateway" "nat_gateway" {
   ]
 }
 
+# Route Table for each private subnet
 resource "aws_route_table" "eks_route_table" {
   count = length(aws_subnet.eks_subnet_private)
 
@@ -56,6 +61,7 @@ resource "aws_route_table" "eks_route_table" {
   }
 }
 
+# Route for NAT Gateway
 resource "aws_route" "eks_routes" {
   count                  = length(aws_subnet.eks_subnet_private)
   route_table_id         = aws_route_table.eks_route_table[count.index].id
@@ -63,7 +69,7 @@ resource "aws_route" "eks_routes" {
   nat_gateway_id         = aws_nat_gateway.nat_gateway[count.index].id
 }
 
-
+# Route to Route Table Association
 resource "aws_route_table_association" "eks_route_table_association" {
   count          = length(aws_subnet.eks_subnet_private)
   subnet_id      = aws_subnet.eks_subnet_private[count.index].id

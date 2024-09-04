@@ -1,3 +1,4 @@
+# Required role scoped to EKS cluster
 resource "aws_iam_role" "eks_role_cluster" {
   name = "${var.eks_name}-eks-role-cluster"
 
@@ -21,6 +22,7 @@ resource "aws_iam_role_policy_attachment" "cluster-AmazonEKSClusterPolicy" {
   role       = aws_iam_role.eks_role_cluster.name
 }
 
+# EKS Cluster
 resource "aws_eks_cluster" "eks_cluster" {
   name     = var.eks_name
   role_arn = aws_iam_role.eks_role_cluster.arn
